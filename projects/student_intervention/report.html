@@ -278,7 +278,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">student_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -292,7 +292,7 @@ div#notebook {
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -458,7 +458,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">passed</span> <span class="o">=</span> <span class="n">student_data</span><span class="p">[</span><span class="s">&#39;passed&#39;</span><span class="p">]</span>
@@ -472,7 +472,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Force floating point division</span>
@@ -486,7 +486,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># TODO: Calculate number of students</span>
@@ -540,6 +540,47 @@ Graduation rate of the class: 67.09%
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Suggestion:-look-at-imbalanced-target-classes">Suggestion: look at imbalanced target classes<a class="anchor-link" href="#Suggestion:-look-at-imbalanced-target-classes">&#182;</a></h5><p>As you can see we have an imbalanced proportion of "yes" &amp; "no" labels and will want to make sure the metric we're using for model evaluation is capturing how well the model is actually doing.</p>
+<p>In this project we use the F1 score. As a benchmark for our final model, we can use the F1 score from predicting all "yes" values:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span>
+<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">F1 score for predicting all &#39;yes&#39;: {:.4f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">f1_score</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;yes&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">n_passed</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;no&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">n_failed</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;yes&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">n_students</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="s">&#39;yes&#39;</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s">&#39;binary&#39;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+F1 score for predicting all &apos;yes&apos;: 0.8030
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Preparing-the-Data">Preparing the Data<a class="anchor-link" href="#Preparing-the-Data">&#182;</a></h2><p>In this section, we will prepare the data for modeling, training and testing.</p>
 <h3 id="Identify-feature-and-target-columns">Identify feature and target columns<a class="anchor-link" href="#Identify-feature-and-target-columns">&#182;</a></h3><p>It is often the case that the data you obtain contains non-numeric features. This can be a problem, as most machine learning algorithms expect numeric data to perform computations with.</p>
 <p>Run the code cell below to separate the student data into feature and target columns to see if any features are non-numeric.</p>
@@ -549,7 +590,7 @@ Graduation rate of the class: 67.09%
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Extract feature columns</span>
@@ -631,7 +672,7 @@ Feature values:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">preprocess_features</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
@@ -702,7 +743,7 @@ Feature values:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># TODO: Import any additional functionality you may need here</span>
@@ -894,7 +935,7 @@ Testing set has 95 samples.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">train_classifier</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">):</span>
@@ -967,7 +1008,7 @@ Testing set has 95 samples.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># TODO: Import the three supervised learning models from sklearn</span>
@@ -1019,44 +1060,44 @@ Testing set has 95 samples.
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Training a GaussianNB using a training set size of 100. . .
-Trained model in 0.0020 seconds
-Made predictions in 0.0003 seconds.
+Trained model in 0.0010 seconds
+Made predictions in 0.0004 seconds.
 F1 score for training set: 0.8447.
-Made predictions in 0.0003 seconds.
+Made predictions in 0.0002 seconds.
 F1 score for test set: 0.7639.
 Training a GaussianNB using a training set size of 200. . .
-Trained model in 0.0006 seconds
+Trained model in 0.0007 seconds
 Made predictions in 0.0003 seconds.
 F1 score for training set: 0.8310.
-Made predictions in 0.0004 seconds.
+Made predictions in 0.0002 seconds.
 F1 score for test set: 0.7132.
 Training a GaussianNB using a training set size of 300. . .
-Trained model in 0.0012 seconds
-Made predictions in 0.0004 seconds.
-F1 score for training set: 0.8274.
+Trained model in 0.0008 seconds
 Made predictions in 0.0003 seconds.
+F1 score for training set: 0.8274.
+Made predictions in 0.0002 seconds.
 F1 score for test set: 0.7669.
 Training a SVC using a training set size of 100. . .
-Trained model in 0.0057 seconds
-Made predictions in 0.0012 seconds.
+Trained model in 0.0010 seconds
+Made predictions in 0.0006 seconds.
 F1 score for training set: 0.8519.
-Made predictions in 0.0007 seconds.
+Made predictions in 0.0006 seconds.
 F1 score for test set: 0.7898.
 Training a SVC using a training set size of 200. . .
-Trained model in 0.0028 seconds
-Made predictions in 0.0018 seconds.
+Trained model in 0.0025 seconds
+Made predictions in 0.0022 seconds.
 F1 score for training set: 0.8616.
-Made predictions in 0.0009 seconds.
+Made predictions in 0.0010 seconds.
 F1 score for test set: 0.7867.
 Training a SVC using a training set size of 300. . .
 Trained model in 0.0053 seconds
-Made predictions in 0.0037 seconds.
+Made predictions in 0.0048 seconds.
 F1 score for training set: 0.8764.
-Made predictions in 0.0012 seconds.
+Made predictions in 0.0017 seconds.
 F1 score for test set: 0.7660.
 Training a DecisionTreeClassifier using a training set size of 100. . .
-Trained model in 0.0027 seconds
-Made predictions in 0.0005 seconds.
+Trained model in 0.0008 seconds
+Made predictions in 0.0002 seconds.
 F1 score for training set: 1.0000.
 Made predictions in 0.0001 seconds.
 F1 score for test set: 0.7559.
@@ -1067,10 +1108,10 @@ F1 score for training set: 1.0000.
 Made predictions in 0.0001 seconds.
 F1 score for test set: 0.7077.
 Training a DecisionTreeClassifier using a training set size of 300. . .
-Trained model in 0.0014 seconds
+Trained model in 0.0015 seconds
 Made predictions in 0.0002 seconds.
 F1 score for training set: 1.0000.
-Made predictions in 0.0002 seconds.
+Made predictions in 0.0001 seconds.
 F1 score for test set: 0.7000.
 </pre>
 </div>
@@ -1250,8 +1291,8 @@ F1 score for test set: 0.7000.
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong></p>
-<blockquote><p>Imagine a data set that has data points belonging to 2 different categories (A and B). Assume also that when plotted on a Cartesian graph all data points belonging to category A are grouped away from the ones in category B. In such case, the SVM algorithm works by finding a line (aka hyperplane) that divides the plotted data points between categories A and B. It also does so by ensuring the "highest margin" possible between the line and the nearest data points from each category. This hyperplane is calculated during training, and the same is later used for making predictions on new data (i.e., predicting whether a new data point belongs in category A or B).</p>
-<p>Even though the algorithm finds a linear separation between the data points, there are tricks that can be used (namely the Kernel trick) that allow us to apply the same mechanism for non-linear boundaries, deeming SVMs as highly useful under a large variety of scenarios.</p>
+<blockquote><p>Let's assume we have a room full of tennis balls spread on the floor. The balls happen to be of 2 brands: A and B. Now let's also assume that due to the different physical attributes between the brands (e.g., weight), the A balls happen to have gathered on the right side of the room, whereas the B ones happened to have gathered on the left side. If we could draw a line between the 2 groups, so that the line equally divides the space between them, then we could use that line to predict whether a new ball randomly thrown into the room is of brand A or brand B (depending on whether they fall on the right or left side of the line accordingly). That is precisely what SVM does: it systematically determines where to draw that line.</p>
+<p>Now in our case, instead of tennis balls we have a group of students. The students belong to 2 groups: the ones that graduated and the ones that didn't. We can characterize those students by different attributes (e.g., age, gender, number of total abscenses, whether they have a job or not, etc.) and let the SVM algorithm create some sort of correlation between those attributes and whether the student graduated, and finally draw "the line" that separates the students that graduated vs the ones that didn't. We can then use that line to help us determine in the future, based on a new student's attributes (age, gender, etc.) whether we can predict him/her to graduate or not. In order to "calculate" such line, we will use a portion of the historical student data we have available; similarly, a smaller (different) portion of that data will be used to "test" our line (i.e., to determine whether that line can accurately predict new, unseen students' outcomes).</p>
 </blockquote>
 
 </div>
@@ -1283,7 +1324,7 @@ F1 score for test set: 0.7000.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># TODO: Import &#39;GridSearchCV&#39; and &#39;make_scorer&#39;</span>
@@ -1324,10 +1365,37 @@ F1 score for test set: 0.7000.
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Made predictions in 0.0038 seconds.
+<pre>Made predictions in 0.0024 seconds.
 Tuned model has a training F1 score of 0.8283.
-Made predictions in 0.0012 seconds.
+Made predictions in 0.0011 seconds.
 Tuned model has a testing F1 score of 0.8027.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="s">&quot;Best params found: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="k">grid_obj</span>.best_params_
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Best params found: {&apos;kernel&apos;: &apos;poly&apos;, &apos;degree&apos;: 1}
 </pre>
 </div>
 </div>
