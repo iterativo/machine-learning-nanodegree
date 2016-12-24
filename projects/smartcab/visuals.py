@@ -125,8 +125,8 @@ def plot_trials(csv):
 		ax.set_xlim((1, len(training_data)))
 		ax.set_ylim((0, 1.05))
 
-		ax.plot(training_data['trial'], training_data['epsilon'], color='blue', label='Exploration factor')
-		ax.plot(training_data['trial'], training_data['alpha'], color='green', label='Learning factor')
+		ax.plot(training_data['trial'], training_data['epsilon'], color='blue', label='Exploration factor (epsilon)')
+		ax.plot(training_data['trial'], training_data['alpha'], color='green', label='Learning factor (alpha)')
 
 		ax.legend(bbox_to_anchor=(0.5,1.19), fancybox=True, ncol=2, loc='upper center', fontsize=10)
 

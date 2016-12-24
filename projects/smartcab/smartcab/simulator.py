@@ -293,7 +293,7 @@ class Simulator(object):
         # Starting new trial
         else:
             a = self.env.primary_agent
-            print "Simulating trial. . . "
+            print "Simulating trial. . .{}".format(trial)
             if a.learning:
                 print "epsilon = {:.4f}; alpha = {:.4f}".format(a.epsilon, a.alpha)
             else:
