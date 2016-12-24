@@ -46,7 +46,7 @@ class LearningAgent(Agent):
             self.epsilon = 0
             self.alpha = 0
         else:
-            self.epsilon = 1/float(self.trial**2)
+            self.epsilon = 1/math.pow(self.trial, 1/1.1)
 
         return None
 
@@ -64,7 +64,8 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set 'state' as a tuple of relevant data for the agent        
-        state = (inputs["light"], inputs["oncoming"], inputs["left"], inputs["right"], deadline)
+        # inputs["right"] is ignored, since there's no right lane.
+        state = (inputs["light"], inputs["oncoming"], inputs["left"], waypoint, deadline)
 
         return state
 
@@ -119,6 +120,8 @@ class LearningAgent(Agent):
             action = random.choice(Environment.valid_actions)
         else:
             action = max(self.Q[state], key=self.Q[state].get)
+            if (action <= 0):
+                action = self.next_waypoint
  
         return action
 
@@ -171,7 +174,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent, learning=True)
+    agent = env.create_agent(LearningAgent, learning=True, alpha=0.2)
     
     ##############
     # Follow the driving agent
@@ -195,7 +198,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10)
+    sim.run(n_test=10, tolerance=0.01)
     # sim.run()
 
 
