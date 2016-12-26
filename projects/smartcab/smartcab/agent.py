@@ -46,7 +46,9 @@ class LearningAgent(Agent):
             self.epsilon = 0
             self.alpha = 0
         else:
-            self.epsilon = 1/math.pow(self.trial, 1/1.1)
+            self.epsilon = self.epsilon - 0.05
+
+        # May want to tweak epsilon eventually
 
         return None
 
@@ -65,7 +67,7 @@ class LearningAgent(Agent):
         ###########
         # Set 'state' as a tuple of relevant data for the agent        
         # inputs["right"] is ignored, since there's no right lane.
-        state = (inputs["light"], inputs["oncoming"], inputs["left"], waypoint, deadline)
+        state = (inputs["light"], inputs["oncoming"], inputs["left"], waypoint)
 
         return state
 
@@ -123,6 +125,8 @@ class LearningAgent(Agent):
             if (action <= 0):
                 action = self.next_waypoint
  
+        # TODO improve by adding probability (read instructions)
+
         return action
 
 
@@ -174,7 +178,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent, learning=True, alpha=0.2)
+    agent = env.create_agent(LearningAgent, learning=True)
     
     ##############
     # Follow the driving agent
@@ -190,7 +194,7 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, update_delay=0.01, log_metrics=True, display=False, optimized=True)
+    sim = Simulator(env, update_delay=0.01, log_metrics=True, display=False)
     # sim = Simulator(env)
     
     ##############
@@ -198,7 +202,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10, tolerance=0.01)
+    sim.run(n_test=10)
     # sim.run()
 
 
