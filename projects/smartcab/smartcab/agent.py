@@ -46,10 +46,10 @@ class LearningAgent(Agent):
             self.epsilon = 0
             self.alpha = 0
         else:
-            # for the first 500 trials, adopt an eager-learning approach
+            # for the first 100 trials, adopt an eager-learning approach
             # then switch to a more natural/random one
-            if (self.trial <= 500):
-                self.epsilon = self.epsilon - 0.001
+            if (self.trial < 100):
+                self.epsilon = self.epsilon - 0.005
             else:
                 self.epsilon = math.cos(random.random()*self.trial)
 
@@ -201,7 +201,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10, tolerance = 0.0001)
+    sim.run(n_test=10, tolerance = 0.00001)
     # sim.run()
 
 
