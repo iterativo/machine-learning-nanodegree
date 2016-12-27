@@ -332,15 +332,15 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <blockquote><ul>
-<li>3 flags that can be set:<ul>
+<li>In the <code>agent.py</code> file, 3 flags that can be set:<ul>
 <li><code>update_delay</code>: Represents the delay between simulation steps. Defaults to 2 secs.</li>
 <li><code>display</code>: When set to False, it disables the GUI if PyGame is enabled. Defaults to True.</li>
 <li><code>log_metrics</code>: Logs trial and simulation results to the /logs dir. Defaults to False.</li>
 </ul>
 </li>
-<li>The <code>act</code> function in the <code>Environment</code> class is called when an agent performs an action.</li>
-<li><code>render_text</code> prints text to the command prompt, whereas <code>render</code> prints it out to the GUI (PyGame's GUI).</li>
-<li>The <code>next_waypoint</code> function creates the next waypoint based on several variables: current heading, location, intended destination, and L1 distance from destination.</li>
+<li>In the <code>environment.py</code> file, the <code>act()</code> function in the <code>Environment</code> class is called when an agent performs an action.</li>
+<li>In the <code>simulator.py</code> file, <code>render_text()</code> prints text to the command prompt, whereas <code>render()</code> prints it out to the GUI (PyGame's GUI).</li>
+<li>In the <code>planner.py</code> file, <code>next_waypoint()</code> considers the East-West direction first.</li>
 </ul>
 </blockquote>
 
@@ -1488,14 +1488,17 @@ kV65wgAAAABJRU5ErkJggg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<blockquote><ul>
-<li>For safety: <code>light</code> (green/red), <code>oncoming traffic direction</code>, and (in our case) <code>left size traffic</code>. Such things have an impact on whether the agent incurs into a violation or not, which is a measure of safety.</li>
-<li>For efficiency: time remaining for <code>deadline</code>, and <code>waypoint</code>, since those can help us to compute efficient (fast) paths to the agent's destination, and help us measure whether we have reached it.</li>
-</ul>
-<p>Other features that are not relevant could be:</p>
+<blockquote><p>Here are the features I considered for the state model:</p>
 <ul>
-<li>The color of the smartcab, the car model, or the type of fuel it uses: These are inappropriate because they have no direct impact on either impacting traffic violations, nor toward helping the agent reach their goal more efficiently.</li>
-<li>Previous traffic violations: Although it may appear as one could use past trends to estimate future behaviors of the agent, MDPs are not concerned with past states. Only with the present state.</li>
+<li><code>light</code>: this is important for safety</li>
+<li><code>oncoming</code>: this is important for safety as well</li>
+<li><code>left</code>: again, this is important for safety</li>
+<li><code>waypoint</code>: this is important for efficiency</li>
+</ul>
+<p>There are 2 other features that I have not included in the model:</p>
+<ul>
+<li><code>right</code>: since this represents the direction of any car to the "right" of the agent, and due to the streets being a single-lane in US orientation, under normal conditions there wouldn't be any cars to the right of the agent. Therefore, it's safe to ignore this feature.</li>
+<li><code>deadline</code>: at first, I considered this feature as part of the state model, but upon further analysis it was obvious it wasn't appropriate. Consider that the range of deadlines is too big, which would make the possible number of states explode, making our Q-table huge and much less useful and driving up the need for an exponential amount of training. Imagine this scenario: for example, for the sake of argument, if there were 100 different values for deadline, that would require 100 times the number of combinations for a particular state (e.g., red|forward|left). If the agent tries to figure out the best action for that state, and it happens to have a deadline of 50 at the time, the Q-table would look for actions for such state only (red|forward|left|50), ignoring any other useful information previously learned for other combinations of red|forward|left states (regardless of deadline values). After thinking about this further, it was obvious to me that adding <code>deadline</code> to the state would just add more noise to the model. Also, by adding <code>deadline</code> to the model, we could probably be skweing the agent toward making decisions that are unsafe (as speed would be encouraged).</li>
 </ul>
 </blockquote>
 
@@ -1531,7 +1534,7 @@ kV65wgAAAABJRU5ErkJggg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<blockquote><p>Based on question 4's response, these could be the features making up the state:</p>
+<blockquote><p>Based on question 4's response, these are the features making up the state:</p>
 <ul>
 <li>light: red or green =&gt; 2</li>
 <li>oncoming traffic direction: none, forward, left, right =&gt; 4</li>
@@ -14498,9 +14501,16 @@ AElFTkSuQmCC
 </li>
 <li>Approximately 100 trials were needed before testing.</li>
 <li>My tolerance was 0.00001, whereas my alpha was the default (0.5). I tried several numbers before, but all delivered low scores. It became obvious that further learning was needed by the agent, so ensuring a very low tolerance and a mid-level learning factor would allow a high level of learning at a mid-level rate.</li>
-<li>A huge improvement was made by this optimized Q-learner, as both scores were improved from "F" to "A+".</li>
+<li>Here is the comparison between the default Q-learning agent and the optimized one:<ul>
+<li>10-trial Rolling Relative Frequency of Bad Actions: on the default agent, the number of total bad actions starts at a lower level than on the optimized one. However, the latter one ends up in a much lower value at the end of the training period. This result seems to be driving mostly by the number of major violations, which appears at a much lower level in the optimized agent. Similarly, the frequency of major accidents ends up in a lower value in the optimized agent, even though the training period shows a bit more bumpiness and variability for such category. On the other hand, the frequency for both minor violations and minor accidents seems a bit higher in the optimized agent. It's important to note that even though these minor violation/accidents values appear at better in the default agent, such results are not necessarily indicative of effectiveness. The default agent could be choosing not to act at all (None) under certain states, which could be driving these violations down; however, that would mean the agent is not really learning much during those times in terms of reliability (as shown by its low scores). We want our agent to learn as much as possible, and they can only do that by making mistakes, so it's important to have an "active" training period, in which the number of mistakes will undoubtedly go up at the beginning, so that it can learn a great variety of actions under different conditions.</li>
+<li>10-trial Rolling Average Reward per Action: this is definitely flatter in the default agent. Again, on the optimized agent, this value starts at a lower level, but slowly climbs its way up to higher values, showing the learning process experienced by the optimized agent.</li>
+<li>Parameter value panel: the panel in the default learning agent shows a linear decaying function for epsilon, whereas in the optimized learning agent, shows a combination of linear and sine curves, properly showing the composite strategy adopted for this agent. The learning factor, alpha, remains the same on both panels, appropriately.</li>
+<li>10-trial Rolling Rate of Reliability: the rate of reliability is definitely flatter in the default agent, and it also shows a decline towards the end of its training to about 10%. On the other hand, the rate of reliability for the optimized agent, again, starts at a lower level but slowly starts climbing its was up throughout the training, reaching levels above 60% towards the end. </li>
+</ul>
+</li>
+<li>All of this causes the safety and reliability ratings to improve from "F" in the default agent, to "A+" in the optimized agent.</li>
 <li>I believe these results do show that the driving agent has successfully learned an appropriate policy, under similar conditions.</li>
-<li>Yes, I'm satisfied with both ratings.</li>
+<li>Yes, I'm satisfied with both ratings shown by the optimized agent.</li>
 </ul>
 </blockquote>
 
@@ -14533,7 +14543,7 @@ AElFTkSuQmCC
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<blockquote><p>Here are a few examples of an optimal policy for red light conditions, based on the states defined:</p>
+<blockquote><p>Here are a few examples of an optimal policy for different light conditions, based on the states defined:</p>
 <ul>
 <li>light: red, oncoming: None, left: None, waypoint: left<ul>
 <li>expected action: None</li>
@@ -14543,8 +14553,15 @@ AElFTkSuQmCC
 <li>expected action: None</li>
 </ul>
 </li>
+<li>light: green, oncoming: None, left: None, waypoint: left<ul>
+<li>expected action: left</li>
 </ul>
-<p>Under all of these states, the action should be None, since the light is red and the smartcab is trying to either turn left or go forward.</p>
+</li>
+<li>light: green, oncoming: None, left: forward, waypoint: right<ul>
+<li>expected action: right</li>
+</ul>
+</li>
+</ul>
 <p>Here are actual examples from the <code>sim_improved-learning.txt</code> file:</p>
 <h5 id="Example-1:-Correct-action">Example 1: Correct action<a class="anchor-link" href="#Example-1:-Correct-action">&#182;</a></h5>
 <pre><code>('red', None, 'left', 'forward')
@@ -14559,7 +14576,7 @@ AElFTkSuQmCC
 -- right : 0.00
 -- None : 0.54
 -- left : 0.55</code></pre>
-<p>In this case, the highest score is for <em>left</em>, and instead it should be <em>None</em>. However, it's important to note that the score for the latter is almost the same as the former. This suggests that with further training, our agent could learn to take the right action for this state.</p>
+<p>In this case, the highest score is for <em>left</em>, and instead it should be <em>None</em>. However, it's important to note that the score for the latter is almost the same as the former. Also, both forward and right are at 0.00 (their initialization value). This suggests that we need further training for this state, in which case our agent could learn to take the right action for this condition.</p>
 <p>Overall, by visually inspecting the <code>sim_improved-learning.txt</code> file, it appears that the majority of the states have the right action as the highest score, which supports the high scores observed in the previous test run.</p>
 </blockquote>
 
