@@ -12,5 +12,5 @@
 
 ### Data
 
-The data used for this project can be [found here](https://www.kaggle.com/c/shelter-animal-outcomes/data).
+The data used for this project can be found in the `data` folder. 
 
